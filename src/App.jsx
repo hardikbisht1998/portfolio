@@ -1,110 +1,63 @@
-// import React from "react";
+import React, { useState, useRef } from "react";
+import Hero from "./pages/Hero";
+import About from "./pages/About";
 import Articles from "./pages/Articles";
-
-import React, { useState } from "react"; // 1. Import useState
+import Contact from "./pages/Contact";
 
 function App() {
-  // 2. Define the state (initially false, meangiting we show the Hero)
-  const [viewArticles, setViewArticles] = useState(false);
+  const [currentView, setCurrentView] = useState("home");
+
+  // Refs for scrolling
+  const experienceRef = useRef(null);
+  const educationRef = useRef(null);
+  const certsRef = useRef(null);
+  const skillsRef = useRef(null);
+
+  const scrollToSection = (ref) => {
+    setCurrentView("home"); // Ensure we are on the home/hero view
+    setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  const renderView = () => {
+    switch (currentView) {
+      case "about":
+        return <About />;
+      case "articles":
+        return <Articles />;
+      case "contact":
+        return <Contact />;
+      default:
+        return (
+          <Hero
+            onNavigateToArticles={() => setCurrentView("articles")}
+            onScrollToExp={() => scrollToSection(experienceRef)}
+            onScrollToEdu={() => scrollToSection(educationRef)}
+            onScrollToCerts={() => scrollToSection(certsRef)}
+           onScrollToSkills={() => scrollToSection(skillsRef)} 
+            refs={{ experienceRef, educationRef, certsRef, skillsRef }}
+          />
+        );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100">
-      {/* Navigation */}
-      <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+      <nav className="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto sticky top-0 bg-white/80 backdrop-blur-md z-50">
         <div
-          className="text-xl font-bold tracking-tighter uppercase cursor-pointer"
-          onClick={() => setViewArticles(false)} // Click logo to go home
+          className="text-xl font-bold tracking-tighter cursor-pointer"
+          onClick={() => setCurrentView("home")}
         >
-          Hardik.dev
+          Hardik.Bisht
         </div>
         <div className="hidden md:flex gap-8 text-sm font-medium text-slate-600">
-          <a href="#about" className="hover:text-blue-600 transition">
-            About
-          </a>
-          {/* We can also trigger the view from the Nav link */}
-          <button
-            onClick={() => setViewArticles(true)}
-            className="hover:text-blue-600 transition"
-          >
-            Articles
-          </button>
-          <a href="#contact" className="hover:text-blue-600 transition">
-            Contact
-          </a>
+          <button onClick={() => setCurrentView("about")}>About</button>
+          <button onClick={() => setCurrentView("articles")}>Articles</button>
+          <button onClick={() => setCurrentView("contact")}>Contact</button>
         </div>
       </nav>
-
-      {/* 3. Conditional Rendering */}
-      {viewArticles ? (
-        // SHOW ARTICLES PAGE
-        <div className="relative">
-          <button
-            onClick={() => setViewArticles(false)}
-            className="absolute top-4 left-8 bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold"
-          >
-            ← Back Home
-          </button>
-          <Articles />
-        </div>
-      ) : (
-        // SHOW HERO SECTION
-        <main className="max-w-7xl mx-auto px-8 pt-20 pb-32 animate-in fade-in duration-500">
-          <div className="max-w-3xl">
-            <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider mb-6">
-              Software Developer • 3.5+ Years Exp
-            </span>
-
-            <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight mb-8">
-              Building <span className="text-blue-600">Resilient</span> Systems.
-            </h1>
-
-            <p className="text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl">
-              Specializing in **Java Backend Development**, Microservices, and
-              Scalable Architecture. I bridge the gap between complex system
-              design and clean, maintainable code.
-            </p>
-
-            <div className="flex flex-wrap gap-4">
-              <button className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition-all transform hover:-translate-y-1 shadow-lg shadow-slate-200">
-                View My Projects
-              </button>
-
-              {/* 4. Trigger the Articles View here */}
-              <button
-                onClick={() => setViewArticles(true)}
-                className="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold hover:border-slate-400 transition-all"
-              >
-                Read Technical Articles
-              </button>
-            </div>
-          </div>
-
-          {/* Feature Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-32">
-            <div className="p-8 rounded-2xl border border-slate-100 bg-slate-50/50">
-              <h3 className="font-bold text-lg mb-3">Backend Master</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Proficient in **Spring Boot**, Struts, and building distributed
-                systems that scale.
-              </p>
-            </div>
-            <div className="p-8 rounded-2xl border border-slate-100 bg-slate-50/50">
-              <h3 className="font-bold text-lg mb-3">System Design</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Implementing **Circuit Breakers**, Rate Limiters, and Load
-                Balancers for high availability.
-              </p>
-            </div>
-            <div className="p-8 rounded-2xl border border-slate-100 bg-slate-50/50">
-              <h3 className="font-bold text-lg mb-3">Frontend Learning</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Currently expanding into **React** and modern CSS to become a
-                true Full-Stack engineer.
-              </p>
-            </div>
-          </div>
-        </main>
-      )}
+      {renderView()}
     </div>
   );
 }
