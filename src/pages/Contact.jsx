@@ -4,7 +4,7 @@ import { Mail, Phone, ExternalLink } from "lucide-react"; // Only keeping the 10
 
 const Contact = () => {
   const contactDetails = {
-    email: "hardikbisht0902@gmail.com",
+    email: "hardikbisht1998@gmail.com",
     primaryPhone: "+91 8920008996",
     secondaryPhone: "+91 8283951479",
     linkedin: "https://www.linkedin.com/in/hardik-bisht",
